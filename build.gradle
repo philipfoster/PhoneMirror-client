@@ -1,0 +1,64 @@
+/*
+ *     Copyright 2017-2017 Philip Foster
+ *
+ *     This file is part of PhoneMirror.
+ *
+ *     Foobar is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Foobar is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.10"
+    }
+}
+
+group 'com.github.phonemirror'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: "net.ltgt.apt"
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+ext {
+    daggerVersion = "2.10"
+    mainClass = "com.github.phonemirror.Main"
+}
+
+mainClassName = mainClass
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': mainClass
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "com.google.dagger:dagger:2.10"
+    apt "com.google.dagger:dagger-compiler:2.10"
+}
