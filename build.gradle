@@ -31,11 +31,25 @@ buildscript {
 group 'com.github.phonemirror'
 version '1.0-SNAPSHOT'
 
+apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: "net.ltgt.apt"
 apply plugin: 'application'
 
 sourceCompatibility = 1.8
+
+compileJava {
+    options.compilerArgs+= [
+            "-s", project.projectDir.absolutePath + '/src/main/generated'
+    ]
+}
+
+idea {
+    module {
+        // generatedSourceDir does  not work for some reason
+        sourceDirs  += file(project.projectDir.absolutePath + '/src/main/generated')
+    }
+}
 
 ext {
     daggerVersion = "2.10"
@@ -61,4 +75,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile "com.google.dagger:dagger:2.10"
     apt "com.google.dagger:dagger-compiler:2.10"
+    compile 'com.intellij:forms_rt:6.0.5'
+
 }

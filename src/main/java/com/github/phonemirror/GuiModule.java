@@ -35,7 +35,7 @@ import javax.inject.Singleton;
 public class GuiModule {
 
     @Provides
-    public MainMenuViewController provdesMainMenuController() {
+    public MainMenuViewController providesMainMenuController() {
         return new MainMenuViewController();
     }
 

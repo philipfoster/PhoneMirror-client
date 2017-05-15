@@ -19,18 +19,27 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.gui.controller.MainMenuViewController;
-import com.github.phonemirror.gui.view.impl.MainMenu;
+import com.github.phonemirror.gui.view.MainMenuView;
+
+import javax.inject.Inject;
 
 /**
  * This class contains the main method
  */
 public class Main {
 
+    public static AppComponent component;
+
+    @Inject
+    MainMenuView menu;
+
+    Main() {
+        component.inject(this);
+    }
 
     public static void main(String[] args) {
-        MainMenuViewController mmvc = new MainMenuViewController();
-        MainMenu menu = new MainMenu(mmvc);
+        component = DaggerAppComponent.create();
+        new Main();
     }
 
 }

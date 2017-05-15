@@ -29,4 +29,6 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {GuiModule.class})
 public interface AppComponent {
+
+    void inject(Main main);
 }
