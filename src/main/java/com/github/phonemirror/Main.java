@@ -22,6 +22,7 @@ package com.github.phonemirror;
 import com.github.phonemirror.gui.view.MainMenuView;
 
 import javax.inject.Inject;
+import javax.swing.*;
 
 /**
  * This class contains the main method
@@ -34,7 +35,7 @@ public class Main {
     MainMenuView menu;
 
     Main() {
-        component.inject(this);
+        SwingUtilities.invokeLater(() -> component.inject(this));
     }
 
     public static void main(String[] args) {

@@ -31,7 +31,8 @@ import java.awt.*;
  */
 public class MainMenu implements MainMenuView {
 
-
+    @Inject
+    DevicesTab devicesTab;
     private JPanel panel;
     private JPanel buttonPanel;
     private JButton notificationsButton;
@@ -40,7 +41,6 @@ public class MainMenu implements MainMenuView {
     private JButton settingsButton;
     private JButton devicesButton;
     private JPanel contentPanel;
-
     private MainMenuViewController controller;
 
     {
@@ -52,7 +52,6 @@ public class MainMenu implements MainMenuView {
 
     @Inject
     public MainMenu(MainMenuViewController controller) {
-
         this.controller = controller;
         controller.registerView(this);
 
@@ -71,40 +70,45 @@ public class MainMenu implements MainMenuView {
             // TODO: setup proper logging
             e.printStackTrace();
         }
-
     }
 
     private void setupClickListeners() {
-
+        devicesButton.addActionListener(e -> controller.onDevicesClicked());
+        notificationsButton.addActionListener(e -> controller.onNotificationsClicked());
+        messagesButton.addActionListener(e -> controller.onMessagesClicked());
+        phoneButton.addActionListener(e -> controller.onPhoneClicked());
+        settingsButton.addActionListener(e -> controller.onSettingsClicked());
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+        contentPanel.add(devicesTab);
+        System.out.println(devicesTab.controller);
     }
 
     @Override
     public void showDevicesTab() {
-
+        System.out.println("MM showing devices tab");
     }
 
     @Override
     public void showNotificationsTab() {
-
+        System.out.println("MM showing notifications tab");
     }
 
     @Override
     public void showMessagesTab() {
-
+        System.out.println("MM showing messages tab");
     }
 
     @Override
     public void showPhoneTab() {
-
+        System.out.println("MM showing phone tab");
     }
 
     @Override
     public void showSettingsTab() {
-
+        System.out.println("MM showing settings tab");
     }
 
     /**
@@ -179,7 +183,7 @@ public class MainMenu implements MainMenuView {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         buttonPanel.add(spacer2, gbc);
         contentPanel = new JPanel();
-        contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        contentPanel.setLayout(new BorderLayout(0, 0));
         panel.add(contentPanel, BorderLayout.CENTER);
     }
 

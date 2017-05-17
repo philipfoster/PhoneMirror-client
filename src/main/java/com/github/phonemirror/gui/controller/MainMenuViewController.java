@@ -27,4 +27,28 @@ import com.github.phonemirror.gui.view.MainMenuView;
 public class MainMenuViewController extends AbstractViewController<MainMenuView> {
 
 
+    public void onDevicesClicked() {
+        System.out.println("MMVC button clicked");
+        getView().showDevicesTab();
+    }
+
+    public void onNotificationsClicked() {
+        System.out.println("MMVC notifications clicked");
+        getView().showNotificationsTab();
+    }
+
+    public void onMessagesClicked() {
+        System.out.println("MMVC messages clicked");
+        getView().showMessagesTab();
+    }
+
+    public void onPhoneClicked() {
+        System.out.println("MMVC phone clicked");
+        getView().showPhoneTab();
+    }
+
+    public void onSettingsClicked() {
+        System.out.println("MMVC settings clicked");
+        getView().showSettingsTab();
+    }
 }
