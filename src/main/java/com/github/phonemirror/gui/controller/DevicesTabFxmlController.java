@@ -18,26 +18,25 @@
 
 package com.github.phonemirror.gui.controller;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
+
 /**
- * This is the base class for all view controllers.
- * Views should call {@link #registerView(Object)} as soon as
- * they are provided with a controller.
- *
- * @param <V> The type of view that this object controls
+ * View controller class for Devices tab
  */
-public abstract class AbstractViewController<V> {
+public class DevicesTabFxmlController {
 
-    private V view;
+    @FXML
+    private Text deviceNameText;
+    @FXML
+    private Text serialNoText;
+    @FXML
+    private Text deviceStatusText;
+    @FXML
+    private ListView<String> devicesList;
 
-    protected V getView() {
-        if (view == null) {
-            throw new NullPointerException("view is null. Did you forget register the view with the controller?");
-        }
-        return view;
+    public DevicesTabFxmlController() {
+//        devicesList.setItems();
     }
-
-    public void registerView(V view) {
-        this.view = view;
-    }
-
 }

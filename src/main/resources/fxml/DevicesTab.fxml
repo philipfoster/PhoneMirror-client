@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<!--
+  ~ PhoneMirror-client
+  ~ Copyright (C) 2017  Philip Foster
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.phonemirror.gui.controller.DevicesTabFxmlController">
+    <children>
+
+        <SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.333" maxHeight="1.7976931348623157E308"
+                   maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="183.0">
+                    <children>
+                        <ListView id="devicesList" layoutX="7.0" layoutY="25.0" maxHeight="25.0" minHeight="25.0"
+                                  prefHeight="521.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane id="devicesPane" minHeight="0.0" minWidth="0.0" prefHeight="535.0" prefWidth="397.0">
+                    <children>
+                        <Text layoutX="96.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="Device Information">
+                            <font>
+                                <Font size="25.0"/>
+                            </font>
+                        </Text>
+                        <Text id="deviceNameText" layoutX="50.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="Device Name"/>
+                        <Text id="serialNoText" layoutX="50.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              text="Serial No"/>
+                        <Pane id="statusPane" layoutX="-13.0" layoutY="540.0" maxHeight="-Infinity"
+                              minHeight="-Infinity" prefHeight="25.0" prefWidth="800.0" AnchorPane.bottomAnchor="35.0"
+                              AnchorPane.leftAnchor="-13.0" AnchorPane.rightAnchor="13.0"/>
+                        <Text id="deviceStatusText" layoutX="50.0" layoutY="157.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" text="Status: Disconnected"/>
+                        <Button id="connectButton" layoutX="164.0" layoutY="385.0" mnemonicParsing="false"
+                                text="Connect"/>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+
+</AnchorPane>
