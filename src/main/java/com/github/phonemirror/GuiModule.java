@@ -19,17 +19,7 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.gui.controller.DevicesViewController;
-import com.github.phonemirror.gui.controller.MainMenuViewController;
-import com.github.phonemirror.gui.view.DevicesView;
-import com.github.phonemirror.gui.view.MainMenuView;
-import com.github.phonemirror.gui.view.impl.DevicesTab;
-import com.github.phonemirror.gui.view.impl.MainMenu;
 import dagger.Module;
-import dagger.Provides;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * The dagger module for the application
@@ -37,29 +27,5 @@ import javax.inject.Singleton;
 @Module
 public class GuiModule {
 
-    @Provides
-    @Singleton
-    public DevicesViewController provideDevicesViewController() {
-        return new DevicesViewController();
-    }
-
-    @Singleton
-    @Inject
-    @Provides
-    public DevicesView provideDevicesView() {
-        return new DevicesTab();
-    }
-
-    @Provides
-    public MainMenuViewController providesMainMenuController() {
-        return new MainMenuViewController();
-    }
-
-    @Provides
-    @Singleton
-    @Inject
-    public MainMenuView providesMainMenu(MainMenuViewController controller) {
-        return new MainMenu(controller);
-    }
 
 }

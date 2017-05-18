@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minWidth="800.0" prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.phonemirror.gui.controller.MainMenuFxmlController">
+    <cursor>
+        <Cursor fx:constant="DEFAULT"/>
+    </cursor>
+    <children>
+        <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Settings"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onExitClicked" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <VBox id="buttonContainer" focusTraversable="true" layoutX="7.0" layoutY="25.0" maxWidth="175.0"
+              minWidth="100.0" prefHeight="517.0" prefWidth="175.0" AnchorPane.bottomAnchor="25.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="625.0" AnchorPane.topAnchor="25.0">
+            <padding>
+                <Insets left="10.0" top="5.0"/>
+            </padding>
+            <children>
+                <Button id="devicesButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        onAction="#onDevicesClicked" text="Devices">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+                <Button id="notificationsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        text="Notifications">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+                <Button id="messagesButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Messages">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+                <Button id="phoneButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Phone">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                    <opaqueInsets>
+                        <Insets left="5.0"/>
+                    </opaqueInsets>
+                </Button>
+            </children>
+            <opaqueInsets>
+                <Insets left="5.0"/>
+            </opaqueInsets>
+        </VBox>
+        <Pane id="contentPane" layoutX="193.0" layoutY="25.0" prefHeight="575.0" prefWidth="608.0"
+              AnchorPane.bottomAnchor="25.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+            <children>
+                <SplitPane dividerPositions="0.333" layoutX="-3.0" layoutY="14.0" maxHeight="1.7976931348623157E308"
+                           maxWidth="1.7976931348623157E308" prefHeight="537.0" prefWidth="600.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="534.0" prefWidth="183.0">
+                            <children>
+                                <ListView layoutX="-3.0" layoutY="31.0" maxHeight="25.0" minHeight="25.0"
+                                          prefHeight="521.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                          AnchorPane.topAnchor="25.0"/>
+                                <Button id="addDeviceButton" alignment="CENTER" layoutX="-1.0" layoutY="2.0"
+                                        maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false"
+                                        prefHeight="25.0" prefWidth="196.0" text="Add New Device" textAlignment="CENTER"
+                                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                        AnchorPane.topAnchor="0.0"/>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane id="devicesPane" minHeight="0.0" minWidth="0.0" prefHeight="535.0"
+                                    prefWidth="397.0">
+                            <children>
+                                <Text layoutX="96.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Device Information">
+                                    <font>
+                                        <Font size="25.0"/>
+                                    </font>
+                                </Text>
+                                <Text layoutX="50.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Device Name"/>
+                                <Text layoutX="50.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                      text="Serial No"/>
+                                <Pane id="statusPane" layoutX="-13.0" layoutY="540.0" maxHeight="-Infinity"
+                                      minHeight="-Infinity" prefHeight="25.0" prefWidth="800.0"
+                                      AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="-13.0"
+                                      AnchorPane.rightAnchor="13.0"/>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

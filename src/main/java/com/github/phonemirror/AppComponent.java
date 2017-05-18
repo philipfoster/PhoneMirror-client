@@ -19,7 +19,6 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.gui.view.impl.DevicesTab;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -30,8 +29,4 @@ import javax.inject.Singleton;
 @Singleton
 @Component(modules = {GuiModule.class})
 public interface AppComponent {
-
-    void inject(Main main);
-
-    void inject(DevicesTab devicesTab);
 }
