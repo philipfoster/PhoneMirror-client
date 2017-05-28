@@ -16,20 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.phonemirror;
-
-import com.github.phonemirror.gui.controller.DevicesTabFxmlController;
-import dagger.Component;
-
-import javax.inject.Singleton;
+package com.github.phonemirror.util;
 
 /**
- * The dagger component for the application
+ * Simple math utility functions.
  */
-@Singleton
-@Component(modules = {GuiModule.class})
-public interface AppComponent {
-    void inject(Main main);
+public class MathUtils {
 
-    void inject(DevicesTabFxmlController devicesTabFxmlController);
+    /**
+     * Convert a signed 2's complement {@code byte} into an unsigned int
+     *
+     * @param b the byte value to convert
+     *
+     * @return a converted
+     */
+    public static int unsign(byte b) {
+        return 255 & b;
+    }
+
 }

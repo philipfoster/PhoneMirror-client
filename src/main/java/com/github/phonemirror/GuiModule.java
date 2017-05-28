@@ -18,13 +18,74 @@
 
 package com.github.phonemirror;
 
+import com.github.phonemirror.net.DeviceProbe;
+import com.github.phonemirror.pojo.PairingData;
+import com.github.phonemirror.util.Configuration;
+import com.google.gson.Gson;
+import com.google.zxing.qrcode.QRCodeWriter;
 import dagger.Module;
+import dagger.Provides;
+import org.apache.log4j.Logger;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Properties;
 
 /**
  * The dagger module for the application
  */
+@SuppressWarnings("WeakerAccess")
 @Module
 public class GuiModule {
 
+    private static final Logger logger = Logger.getLogger(GuiModule.class);
+
+    @Provides
+    @Singleton
+    public SecureRandom provideRng() {
+        try {
+            return SecureRandom.getInstanceStrong();
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Could not create SecureRandom instance", e);
+            return null;
+        }
+    }
+
+    @Provides
+    public Gson provideGson() {
+        return new Gson();
+    }
+
+    @Provides
+    public Properties provideProperties() {
+        return new Properties();
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    public Configuration provideConfig(Properties props) {
+        return new Configuration(props);
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    public DeviceProbe provideProbe(Configuration config, Gson gson) {
+        return new DeviceProbe(config, gson);
+    }
+
+    @Provides
+    public QRCodeWriter provideQrWriter() {
+        return new QRCodeWriter();
+    }
+
+    @Provides
+    @Inject
+    public PairingData providePairingData(Configuration config, SecureRandom rng) {
+        return new PairingData(config, rng);
+    }
 
 }

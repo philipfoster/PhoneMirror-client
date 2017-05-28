@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.github.phonemirror;
+package com.github.phonemirror.pojo;
 
-import com.github.phonemirror.gui.controller.DevicesTabFxmlController;
-import dagger.Component;
-
-import javax.inject.Singleton;
+import java.net.InetAddress;
 
 /**
- * The dagger component for the application
+ * This class represents a phone that can be connected to
  */
-@Singleton
-@Component(modules = {GuiModule.class})
-public interface AppComponent {
-    void inject(Main main);
+public class Phone {
 
-    void inject(DevicesTabFxmlController devicesTabFxmlController);
+    private InetAddress ipAddr;
+    private int port;
+    private String name;
+    private String serial;
+    private boolean connected;
+
 }

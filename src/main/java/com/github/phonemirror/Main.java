@@ -18,17 +18,24 @@
 
 package com.github.phonemirror;
 
+import com.github.phonemirror.net.DeviceProbe;
+import com.github.phonemirror.util.Configuration;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 public class Main extends Application {
 
     public static AppComponent component;
+    @Inject
+    Configuration config;
+    @Inject
+    DeviceProbe probe;
 
     public static void main(String[] args) {
         component = DaggerAppComponent.create();
@@ -38,11 +45,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        // TODO: don't hardcode values
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/MainMenu.fxml"));
-        Scene scene = new Scene(root, 800, 400);
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(400);
+        component.inject(this);
+        Parent root = FXMLLoader.load(config.getMainMenuLayout());
+        Scene scene = new Scene(root, config.getDefaultWidth(), config.getDefaultHeight());
+        primaryStage.setMinWidth(config.getMinWidth());
+        primaryStage.setMinHeight(config.getMinHeight());
 
         primaryStage.setTitle("Phone Mirror");
         primaryStage.setScene(scene);
