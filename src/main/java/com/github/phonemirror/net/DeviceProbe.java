@@ -29,8 +29,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * This class is responsible for scanning for nearby devices that we can connect to.
@@ -48,16 +46,16 @@ public class DeviceProbe {
     public DeviceProbe(Configuration config, Gson gson) {
         this.config = config;
         this.gson = gson;
+//
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                sendBeacon();
+//            }
+//        }, 0, 1000);
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                sendBeacon();
-            }
-        }, 0, 1000);
-
-        sendBeacon();
+//        sendBeacon();
     }
 
     /**

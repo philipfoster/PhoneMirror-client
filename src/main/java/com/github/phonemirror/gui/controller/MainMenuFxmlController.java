@@ -18,6 +18,7 @@
 
 package com.github.phonemirror.gui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 
 /**
@@ -32,7 +33,7 @@ public class MainMenuFxmlController {
 
     @FXML
     private void onExitClicked() {
-        System.exit(0);
+        Platform.exit();
     }
 
 }

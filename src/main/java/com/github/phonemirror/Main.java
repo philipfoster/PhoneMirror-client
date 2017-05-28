@@ -21,6 +21,7 @@ package com.github.phonemirror;
 import com.github.phonemirror.net.DeviceProbe;
 import com.github.phonemirror.util.Configuration;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -43,16 +44,17 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage mainStage) throws IOException {
 
         component.inject(this);
         Parent root = FXMLLoader.load(config.getMainMenuLayout());
         Scene scene = new Scene(root, config.getDefaultWidth(), config.getDefaultHeight());
-        primaryStage.setMinWidth(config.getMinWidth());
-        primaryStage.setMinHeight(config.getMinHeight());
+        mainStage.setMinWidth(config.getMinWidth());
+        mainStage.setMinHeight(config.getMinHeight());
 
-        primaryStage.setTitle("Phone Mirror");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        mainStage.setTitle("Phone Mirror");
+        mainStage.setScene(scene);
+        mainStage.setOnCloseRequest(e -> Platform.exit());
+        mainStage.show();
     }
 }
