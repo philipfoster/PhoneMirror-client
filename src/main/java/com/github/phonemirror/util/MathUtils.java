@@ -16,5 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'desktop-client'
+package com.github.phonemirror.util;
 
+/**
+ * Simple math utility functions.
+ */
+public class MathUtils {
+
+    /**
+     * Convert a signed 2's complement {@code byte} into an unsigned int
+     *
+     * @param b the byte value to convert
+     *
+     * @return a converted
+     */
+    public static int unsign(byte b) {
+        return 255 & b;
+    }
+
+}

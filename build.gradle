@@ -1,20 +1,19 @@
 /*
- *     Copyright 2017-2017 Philip Foster
+ * PhoneMirror-client
+ * Copyright (C) 2017  Philip Foster
  *
- *     This file is part of PhoneMirror.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     Foobar is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     Foobar is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 buildscript {
@@ -76,5 +75,9 @@ dependencies {
     compile "com.google.dagger:dagger:2.10"
     apt "com.google.dagger:dagger-compiler:2.10"
     compile 'com.intellij:forms_rt:6.0.5'
-
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.intellij:annotations:9.0.4'
+    compile 'log4j:log4j:1.2.17'
+    compile 'com.google.zxing:javase:3.3.0'
 }

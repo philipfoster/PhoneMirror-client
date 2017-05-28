@@ -16,5 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'desktop-client'
+package com.github.phonemirror.pojo;
 
+import java.net.InetAddress;
+
+/**
+ * This class represents a phone that can be connected to
+ */
+public class Phone {
+
+    private InetAddress ipAddr;
+    private int port;
+    private String name;
+    private String serial;
+    private boolean connected;
+
+}

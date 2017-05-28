@@ -16,5 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-rootProject.name = 'desktop-client'
+package com.github.phonemirror.gui.controller;
 
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+
+/**
+ * Main menu fxml view controller.
+ */
+public class MainMenuFxmlController {
+
+    @FXML
+    private void onDevicesClicked() {
+        System.out.println("Hello World");
+    }
+
+    @FXML
+    private void onExitClicked() {
+        Platform.exit();
+    }
+
+}

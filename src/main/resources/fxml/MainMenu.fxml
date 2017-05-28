@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ PhoneMirror-client
+  ~ Copyright (C) 2017  Philip Foster
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="com.github.phonemirror.gui.controller.MainMenuFxmlController">
+    <cursor>
+        <Cursor fx:constant="DEFAULT"/>
+    </cursor>
+    <children>
+        <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Settings"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onExitClicked" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <VBox id="buttonContainer" focusTraversable="true" layoutX="15.0" layoutY="35.0" prefWidth="175.0"
+              AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="35.0">
+            <children>
+                <Button id="devicesButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        onAction="#onDevicesClicked" text="Devices">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </Button>
+                <Button id="notificationsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                        text="Notifications">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+                <Button id="messagesButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Messages">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                </Button>
+                <Button id="phoneButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Phone">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                    <opaqueInsets>
+                        <Insets left="5.0"/>
+                    </opaqueInsets>
+                </Button>
+            </children>
+            <opaqueInsets>
+                <Insets left="5.0"/>
+            </opaqueInsets>
+        </VBox>
+        <StackPane layoutX="200.0" layoutY="35.0" prefHeight="238.0" prefWidth="355.0" AnchorPane.bottomAnchor="25.0"
+                   AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="35.0">
+            <children>
+                <fx:include source="DevicesTab.fxml"/>
+            </children>
+        </StackPane>
+    </children>
+</AnchorPane>

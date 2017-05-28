@@ -1,65 +1,91 @@
 /*
- *     Copyright 2017-2017 Philip Foster
+ * PhoneMirror-client
+ * Copyright (C) 2017  Philip Foster
  *
- *     This file is part of PhoneMirror.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     Foobar is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     Foobar is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.gui.controller.DevicesViewController;
-import com.github.phonemirror.gui.controller.MainMenuViewController;
-import com.github.phonemirror.gui.view.DevicesView;
-import com.github.phonemirror.gui.view.MainMenuView;
-import com.github.phonemirror.gui.view.impl.DevicesTab;
-import com.github.phonemirror.gui.view.impl.MainMenu;
+import com.github.phonemirror.net.DeviceProbe;
+import com.github.phonemirror.pojo.PairingData;
+import com.github.phonemirror.util.Configuration;
+import com.google.gson.Gson;
+import com.google.zxing.qrcode.QRCodeWriter;
 import dagger.Module;
 import dagger.Provides;
+import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Properties;
 
 /**
  * The dagger module for the application
  */
+@SuppressWarnings("WeakerAccess")
 @Module
 public class GuiModule {
 
+    private static final Logger logger = Logger.getLogger(GuiModule.class);
+
     @Provides
     @Singleton
-    public DevicesViewController provideDevicesViewController() {
-        return new DevicesViewController();
+    public SecureRandom provideRng() {
+        try {
+            return SecureRandom.getInstanceStrong();
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Could not create SecureRandom instance", e);
+            return null;
+        }
     }
 
+    @Provides
+    public Gson provideGson() {
+        return new Gson();
+    }
+
+    @Provides
+    public Properties provideProperties() {
+        return new Properties();
+    }
+
+    @Provides
     @Singleton
     @Inject
-    @Provides
-    public DevicesView provideDevicesView() {
-        return new DevicesTab();
-    }
-
-    @Provides
-    public MainMenuViewController providesMainMenuController() {
-        return new MainMenuViewController();
+    public Configuration provideConfig(Properties props) {
+        return new Configuration(props);
     }
 
     @Provides
     @Singleton
     @Inject
-    public MainMenuView providesMainMenu(MainMenuViewController controller) {
-        return new MainMenu(controller);
+    public DeviceProbe provideProbe(Configuration config, Gson gson) {
+        return new DeviceProbe(config, gson);
+    }
+
+    @Provides
+    public QRCodeWriter provideQrWriter() {
+        return new QRCodeWriter();
+    }
+
+    @Provides
+    @Inject
+    public PairingData providePairingData(Configuration config, SecureRandom rng) {
+        return new PairingData(config, rng);
     }
 
 }
