@@ -18,7 +18,6 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.net.DeviceProbe;
 import com.github.phonemirror.util.Configuration;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -35,8 +34,14 @@ public class Main extends Application {
     public static AppComponent component;
     @Inject
     Configuration config;
+
     @Inject
-    DeviceProbe probe;
+    AppDaemon daemon;
+
+    public Main() {
+        component.inject(this);
+    }
+
 
     public static void main(String[] args) {
         component = DaggerAppComponent.create();
@@ -45,6 +50,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage mainStage) throws IOException {
+
+        daemon.start();
 
         component.inject(this);
         Parent root = FXMLLoader.load(config.getMainMenuLayout());
@@ -56,5 +63,6 @@ public class Main extends Application {
         mainStage.setScene(scene);
         mainStage.setOnCloseRequest(e -> Platform.exit());
         mainStage.show();
+
     }
 }

@@ -67,11 +67,15 @@ public class Configuration {
         return getClass().getResource(defaultProperties.getProperty("mainMenuFxml"));
     }
 
-    public InetAddress getMulticastAddress() throws UnknownHostException {
+    public InetAddress getMulticastGroup() throws UnknownHostException {
         return InetAddress.getByName(defaultProperties.getProperty("multicastGroupAddress"));
     }
 
     public int getVersion() {
         return Integer.parseInt(defaultProperties.getProperty("version"));
+    }
+
+    public int getTimeout() {
+        return Integer.parseInt(defaultProperties.getProperty("timeout"));
     }
 }

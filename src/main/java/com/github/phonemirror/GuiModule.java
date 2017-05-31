@@ -18,7 +18,7 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.net.DeviceProbe;
+import com.github.phonemirror.background.DevicePairingWorker;
 import com.github.phonemirror.pojo.PairingData;
 import com.github.phonemirror.util.Configuration;
 import com.google.gson.Gson;
@@ -42,6 +42,7 @@ public class GuiModule {
 
     private static final Logger logger = Logger.getLogger(GuiModule.class);
 
+
     @Provides
     @Singleton
     public SecureRandom provideRng() {
@@ -54,6 +55,21 @@ public class GuiModule {
     }
 
     @Provides
+    @Singleton
+    @Inject
+    public DevicePairingWorker provideDpw(Configuration conf, Gson gson) {
+        return new DevicePairingWorker(conf, gson);
+    }
+
+    @Provides
+    @Singleton
+    @Inject
+    public AppDaemon provideDaemon(DevicePairingWorker dpw) {
+        return new AppDaemon(dpw);
+    }
+
+    @Provides
+    @Singleton
     public Gson provideGson() {
         return new Gson();
     }
@@ -71,13 +87,6 @@ public class GuiModule {
     }
 
     @Provides
-    @Singleton
-    @Inject
-    public DeviceProbe provideProbe(Configuration config, Gson gson) {
-        return new DeviceProbe(config, gson);
-    }
-
-    @Provides
     public QRCodeWriter provideQrWriter() {
         return new QRCodeWriter();
     }
@@ -87,5 +96,4 @@ public class GuiModule {
     public PairingData providePairingData(Configuration config, SecureRandom rng) {
         return new PairingData(config, rng);
     }
-
 }
