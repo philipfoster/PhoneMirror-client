@@ -18,7 +18,8 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.background.DevicePairingWorker;
+import com.github.phonemirror.background.BeaconListener;
+import com.github.phonemirror.background.BeaconSender;
 import com.github.phonemirror.pojo.PairingData;
 import com.github.phonemirror.util.Configuration;
 import com.google.gson.Gson;
@@ -57,15 +58,22 @@ public class GuiModule {
     @Provides
     @Singleton
     @Inject
-    public DevicePairingWorker provideDpw(Configuration conf, Gson gson) {
-        return new DevicePairingWorker(conf, gson);
+    public BeaconListener provideBeaconListener(Configuration conf, Gson gson) {
+        return new BeaconListener(conf, gson);
+    }
+
+    @Inject
+    @Singleton
+    @Provides
+    public BeaconSender provideSender(Configuration config, Gson gson) {
+        return new BeaconSender(config, gson);
     }
 
     @Provides
     @Singleton
     @Inject
-    public AppDaemon provideDaemon(DevicePairingWorker dpw) {
-        return new AppDaemon(dpw);
+    public AppDaemon provideDaemon(BeaconListener listener, BeaconSender sender) {
+        return new AppDaemon(listener, sender);
     }
 
     @Provides

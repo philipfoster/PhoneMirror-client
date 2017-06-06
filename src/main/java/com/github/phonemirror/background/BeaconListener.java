@@ -29,9 +29,7 @@ import org.reactivestreams.Subscriber;
 import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.MulticastSocket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,16 +37,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * This class manages connections between the PC and relevant devices on the network.
  */
-public class DevicePairingWorker implements Publisher<Device>, Closeable {
+public class BeaconListener implements Publisher<Device>, Closeable {
 
-    private static final Logger logger = Logger.getLogger(DevicePairingWorker.class);
+    private static final Logger logger = Logger.getLogger(BeaconListener.class);
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Configuration config;
     private List<Subscriber<? super Device>> subscribers = new ArrayList<>();
     private Gson gson;
 
     @Inject
-    public DevicePairingWorker(Configuration config, Gson gson) {
+    public BeaconListener(Configuration config, Gson gson) {
         this.config = config;
         this.gson = gson;
     }
@@ -56,8 +54,9 @@ public class DevicePairingWorker implements Publisher<Device>, Closeable {
     private void startBeaconListener() {
 
 
-        try (MulticastSocket socket = new MulticastSocket(config.getPort())) {
-            logger.info(socket.getInterface().toString());
+        try (MulticastSocket socket = new MulticastSocket(null)) {
+
+            socket.bind(new InetSocketAddress(InetAddress.getLocalHost(), config.getPort()));
             socket.joinGroup(config.getMulticastGroup());
             socket.setSoTimeout(config.getTimeout());
 

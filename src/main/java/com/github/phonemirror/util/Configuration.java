@@ -27,6 +27,7 @@ import java.util.Properties;
 
 /**
  * This class loads configuration
+ * TODO: document what each parameter means
  */
 public class Configuration {
 
@@ -77,5 +78,9 @@ public class Configuration {
 
     public int getTimeout() {
         return Integer.parseInt(defaultProperties.getProperty("timeout"));
+    }
+
+    public long getBeaconFrequency() {
+        return Long.parseLong(defaultProperties.getProperty("beaconFrequency"));
     }
 }

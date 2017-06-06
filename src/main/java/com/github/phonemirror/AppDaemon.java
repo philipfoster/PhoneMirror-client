@@ -19,12 +19,15 @@
 package com.github.phonemirror;
 
 
-import com.github.phonemirror.background.DevicePairingWorker;
+import com.github.phonemirror.background.BeaconListener;
+import com.github.phonemirror.background.BeaconSender;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -32,15 +35,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This has several advantages to handling everything in the user-facing app, including keeping the JVM alive
  * to listen for messages from the app and handling them even after the user has closed the user facing app.
  */
-public class AppDaemon {
+public class AppDaemon implements Closeable {
 
     private static final Logger logger = Logger.getLogger(AppDaemon.class);
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private DevicePairingWorker devicePairingWorker;
+    private BeaconListener beaconListener;
+    private BeaconSender beaconSender;
 
     @Inject
-    public AppDaemon(DevicePairingWorker dpw) {
-        devicePairingWorker = dpw;
+    public AppDaemon(BeaconListener listener, BeaconSender sender) {
+        beaconListener = listener;
+        beaconSender = sender;
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -50,20 +55,24 @@ public class AppDaemon {
         }
 
         startDevicePairingWorker();
+        beaconSender.start();
     }
 
     private void startDevicePairingWorker() {
         System.out.println("START WORKER - PRINT");
         logger.debug("START WORKER - LOG");
-        Observable.fromPublisher(devicePairingWorker)
+        Observable.fromPublisher(beaconListener)
                 .subscribeOn(Schedulers.io())
                 .subscribe(device -> logger.debug("Found device " + device));
     }
 
-    public void stop() {
+    @Override
+    public void close() throws IOException {
         if (!isRunning.compareAndSet(true, false)) {
             logger.warn("AppDaemon was never started, but stop() was called.");
         }
-    }
 
+        beaconListener.close();
+        beaconSender.close();
+    }
 }

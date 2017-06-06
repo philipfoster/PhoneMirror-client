@@ -25,10 +25,14 @@ import java.net.InetAddress;
  */
 public class Device {
 
-    private InetAddress ipAddress;
+    enum Type { PHONE, PC }
+
     private String name;
     private String serialNo;
-    private boolean connected;
+    private Type deviceType = Type.PC;
+
+    private transient InetAddress ipAddress;
+    private transient boolean connected;
 
     private Device(InetAddress ipAddress, String name, String serialNo, boolean connected) {
         this.ipAddress = ipAddress;
@@ -68,7 +72,7 @@ public class Device {
         private InetAddress ipAddress;
         private String name;
         private String serialNo;
-        private boolean connected;
+        private boolean connected = false;
 
         public Builder setIpAddress(InetAddress ipAddress) {
             this.ipAddress = ipAddress;
