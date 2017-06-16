@@ -18,11 +18,14 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.background.BeaconListener;
-import com.github.phonemirror.background.BeaconSender;
+import com.github.phonemirror.background.PairingBeaconListener;
+import com.github.phonemirror.pojo.Device;
+import com.github.phonemirror.pojo.Message;
 import com.github.phonemirror.pojo.PairingData;
 import com.github.phonemirror.util.Configuration;
+import com.github.phonemirror.util.RuntimeTypeAdapterFactory;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.qrcode.QRCodeWriter;
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +36,8 @@ import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * The dagger module for the application
@@ -58,28 +63,20 @@ public class GuiModule {
     @Provides
     @Singleton
     @Inject
-    public BeaconListener provideBeaconListener(Configuration conf, Gson gson) {
-        return new BeaconListener(conf, gson);
-    }
-
-    @Inject
-    @Singleton
-    @Provides
-    public BeaconSender provideSender(Configuration config, Gson gson) {
-        return new BeaconSender(config, gson);
-    }
-
-    @Provides
-    @Singleton
-    @Inject
-    public AppDaemon provideDaemon(BeaconListener listener, BeaconSender sender) {
-        return new AppDaemon(listener, sender);
+    public AppDaemon provideDaemon(PairingBeaconListener pbl) {
+        return new AppDaemon(pbl);
     }
 
     @Provides
     @Singleton
     public Gson provideGson() {
         return new Gson();
+//
+//        RuntimeTypeAdapterFactory<Message> adapterFactory =
+//                RuntimeTypeAdapterFactory.of(Message.class)
+//                .registerSubtype(Device.class);
+//
+//        return new GsonBuilder().registerTypeAdapterFactory(adapterFactory).create();
     }
 
     @Provides
@@ -103,5 +100,19 @@ public class GuiModule {
     @Inject
     public PairingData providePairingData(Configuration config, SecureRandom rng) {
         return new PairingData(config, rng);
+    }
+
+    @Provides
+    public ExecutorService provideThreadPool() {
+        return Executors.newCachedThreadPool();
+    }
+
+    @Inject
+    @Provides
+    @Singleton
+    public PairingBeaconListener providePairingBeaconListener(ExecutorService threadPool, Configuration conf, Gson gson) {
+        PairingBeaconListener pbl = new PairingBeaconListener(threadPool, conf, gson);
+        pbl.start();
+        return pbl;
     }
 }

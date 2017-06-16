@@ -19,10 +19,7 @@
 package com.github.phonemirror;
 
 
-import com.github.phonemirror.background.BeaconListener;
-import com.github.phonemirror.background.BeaconSender;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
+import com.github.phonemirror.background.PairingBeaconListener;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
@@ -39,13 +36,12 @@ public class AppDaemon implements Closeable {
 
     private static final Logger logger = Logger.getLogger(AppDaemon.class);
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private BeaconListener beaconListener;
-    private BeaconSender beaconSender;
+    private PairingBeaconListener listener;
 
     @Inject
-    public AppDaemon(BeaconListener listener, BeaconSender sender) {
-        beaconListener = listener;
-        beaconSender = sender;
+    public AppDaemon(PairingBeaconListener pbl) {
+        listener = pbl;
+        listener.start();
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -55,15 +51,11 @@ public class AppDaemon implements Closeable {
         }
 
         startDevicePairingWorker();
-        beaconSender.start();
     }
 
     private void startDevicePairingWorker() {
         System.out.println("START WORKER - PRINT");
         logger.debug("START WORKER - LOG");
-        Observable.fromPublisher(beaconListener)
-                .subscribeOn(Schedulers.io())
-                .subscribe(device -> logger.debug("Found device " + device));
     }
 
     @Override
@@ -71,8 +63,5 @@ public class AppDaemon implements Closeable {
         if (!isRunning.compareAndSet(true, false)) {
             logger.warn("AppDaemon was never started, but stop() was called.");
         }
-
-        beaconListener.close();
-        beaconSender.close();
     }
 }

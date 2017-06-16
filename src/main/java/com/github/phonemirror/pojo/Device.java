@@ -23,13 +23,16 @@ import java.net.InetAddress;
 /**
  * This class contains information about a compatible device on the network
  */
+@SuppressWarnings("WeakerAccess")
 public class Device {
+
 
     enum Type { PHONE, PC }
 
     private String name;
     private String serialNo;
     private Type deviceType = Type.PC;
+    private Message.Type messageType = Message.Type.DEVICE;
 
     private transient InetAddress ipAddress;
     private transient boolean connected;
@@ -39,6 +42,7 @@ public class Device {
         this.name = name;
         this.serialNo = serialNo;
         this.connected = connected;
+        messageType = Message.Type.DEVICE;
     }
 
     public InetAddress getIpAddress() {
@@ -57,16 +61,48 @@ public class Device {
         return connected;
     }
 
+
+
+    public Message.Type getType() {
+        return messageType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Device device = (Device) o;
+
+        if (isConnected() != device.isConnected()) return false;
+        if (getName() != null ? !getName().equals(device.getName()) : device.getName() != null) return false;
+        if (getSerialNo() != null ? !getSerialNo().equals(device.getSerialNo()) : device.getSerialNo() != null)
+            return false;
+        if (deviceType != device.deviceType) return false;
+        return getIpAddress() != null ? getIpAddress().equals(device.getIpAddress()) : device.getIpAddress() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getSerialNo() != null ? getSerialNo().hashCode() : 0);
+        result = 31 * result + (deviceType != null ? deviceType.hashCode() : 0);
+        result = 31 * result + (getIpAddress() != null ? getIpAddress().hashCode() : 0);
+        result = 31 * result + (isConnected() ? 1 : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
-                "ipAddress=" + ipAddress +
+                "type=" + messageType +
                 ", name='" + name + '\'' +
                 ", serialNo='" + serialNo + '\'' +
+                ", deviceType=" + deviceType +
+                ", ipAddress=" + ipAddress +
                 ", connected=" + connected +
                 '}';
     }
-
 
     public static class Builder {
         private InetAddress ipAddress;
