@@ -1,7 +1,8 @@
 package com.github.phonemirror.background;
 
+import com.github.phonemirror.messaging.Message;
+import com.github.phonemirror.messaging.MessageType;
 import com.github.phonemirror.pojo.Device;
-import com.github.phonemirror.pojo.Message;
 import com.github.phonemirror.util.Configuration;
 import com.github.phonemirror.util.MessageDecoder;
 import com.github.phonemirror.util.Startable;
@@ -89,14 +90,22 @@ public class PairingBeaconListener implements Publisher<Device>, Closeable, Star
                     continue;
                 }
 
-                String recv = new String(buf, "US-ASCII").trim();
-                logger.info("recv = " + recv);
                 try {
-                    Device device = gson.fromJson(recv, Device.class);
-                    if (device != null) {
-                        sendAcknowledgement(packet.getAddress(), device);
+                    String data = new String(buf, "US-ASCII");
+                    logger.debug(data);
+                    Message<String> message = Message.decode(gson, buf);
+                    if (message != null && message.getMessageType() == MessageType.NETWORK_SCAN) {
+//                        Device device = new Device.Builder()
+//                                .setIpAddress(packet.getAddress())
+//                                .setName(message.getPayload())
+//                                .setSerialNo(message.getId())
+//                                .setConnected(false)
+//                                .build();
+                        sendAcknowledgement(packet.getAddress());
                     }
+
                 } catch (Exception ex) {
+
                     logger.error("wtf?", ex);
                 }
             }
@@ -108,20 +117,30 @@ public class PairingBeaconListener implements Publisher<Device>, Closeable, Star
         }
     }
 
-    private void sendAcknowledgement(InetAddress address, Device recv) {
+    private void sendAcknowledgement(InetAddress address) {
         logger.info("Sending acknowledgement");
         try (Socket socket = new Socket(address, config.getPort())) {
             socket.setReuseAddress(true);
 
-            Device resp = new Device.Builder()
-                    .setName(InetAddress.getLocalHost().getHostName())
-                    .setSerialNo("ASDF") // TODO: set real serial number.
-                    .build();
+//            Device resp = new Device.Builder()
+//                    .setName(InetAddress.getLocalHost().getHostName())
+//                    .setSerialNo("ASDF") // TODO: set real serial number.
+//                    .build();
 
-            byte[] data = gson.toJson(resp, Device.class).getBytes("US-ASCII");
+            //noinspection unchecked
+            Message<String> resp = Message.<String>build()
+                    .setId("ASDF")
+                    .setType(MessageType.NETWORK_SCAN_ACK)
+                    .setPayload(InetAddress.getLocalHost().getHostName())
+                    .createMessage();
 
+            byte[] data = gson.toJson(resp, resp.getDataType()).getBytes("US-ASCII");
+            logger.debug("message = " + resp.toString());
             socket.getOutputStream().write(data);
         } catch (IOException e) {
+            if (e instanceof ConnectException) {
+                logger.error("Connection refused by remote machine. IP = " + address);
+            }
             logger.error("Socket exception occurred while connecting acknowledging phone. ", e);
         }
     }
