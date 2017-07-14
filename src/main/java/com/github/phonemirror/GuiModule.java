@@ -19,13 +19,11 @@
 package com.github.phonemirror;
 
 import com.github.phonemirror.background.PairingBeaconListener;
-import com.github.phonemirror.pojo.Device;
-import com.github.phonemirror.pojo.Message;
 import com.github.phonemirror.pojo.PairingData;
+import com.github.phonemirror.repo.KeyValueStore;
+import com.github.phonemirror.repo.SerialRepository;
 import com.github.phonemirror.util.Configuration;
-import com.github.phonemirror.util.RuntimeTypeAdapterFactory;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.zxing.qrcode.QRCodeWriter;
 import dagger.Module;
 import dagger.Provides;
@@ -33,6 +31,7 @@ import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -110,9 +109,24 @@ public class GuiModule {
     @Inject
     @Provides
     @Singleton
-    public PairingBeaconListener providePairingBeaconListener(ExecutorService threadPool, Configuration conf, Gson gson) {
-        PairingBeaconListener pbl = new PairingBeaconListener(threadPool, conf, gson);
+    public PairingBeaconListener providePairingBeaconListener(ExecutorService threadPool, Configuration conf, Gson gson, SerialRepository repo) {
+        PairingBeaconListener pbl = new PairingBeaconListener(threadPool, conf, gson, repo);
         pbl.start();
         return pbl;
+    }
+
+    @Provides
+    @Singleton
+    public KeyValueStore provideKeyValueStore() {
+        try {
+            return new KeyValueStore();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not instantiate KeyValueStore", e);
+        }
+    }
+
+    @Provides
+    public SerialRepository provideSerialRepository(KeyValueStore kvs) {
+        return new SerialRepository(kvs);
     }
 }

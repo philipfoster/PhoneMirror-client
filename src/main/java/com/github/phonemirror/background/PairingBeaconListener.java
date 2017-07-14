@@ -3,8 +3,8 @@ package com.github.phonemirror.background;
 import com.github.phonemirror.messaging.Message;
 import com.github.phonemirror.messaging.MessageType;
 import com.github.phonemirror.pojo.Device;
+import com.github.phonemirror.repo.SerialRepository;
 import com.github.phonemirror.util.Configuration;
-import com.github.phonemirror.util.MessageDecoder;
 import com.github.phonemirror.util.Startable;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
@@ -35,15 +35,17 @@ public class PairingBeaconListener implements Publisher<Device>, Closeable, Star
     private ExecutorService threadPool;
     private Configuration config;
     private Gson gson;
-    private MessageDecoder decoder;
+//    private MessageDecoder decoder;
+    private SerialRepository serialRepository;
 
 
     @Inject
-    public PairingBeaconListener(ExecutorService threadPool, Configuration config, Gson gson) {
+    public PairingBeaconListener(ExecutorService threadPool, Configuration config, Gson gson, SerialRepository repo) {
         this.threadPool = threadPool;
         this.config = config;
         this.gson = gson;
-        decoder = new MessageDecoder(gson);
+        serialRepository = repo;
+//        decoder = new MessageDecoder(gson);
     }
 
 
@@ -95,12 +97,7 @@ public class PairingBeaconListener implements Publisher<Device>, Closeable, Star
                     logger.debug(data);
                     Message<String> message = Message.decode(gson, buf);
                     if (message != null && message.getMessageType() == MessageType.NETWORK_SCAN) {
-//                        Device device = new Device.Builder()
-//                                .setIpAddress(packet.getAddress())
-//                                .setName(message.getPayload())
-//                                .setSerialNo(message.getId())
-//                                .setConnected(false)
-//                                .build();
+
                         sendAcknowledgement(packet.getAddress());
                     }
 
@@ -122,14 +119,9 @@ public class PairingBeaconListener implements Publisher<Device>, Closeable, Star
         try (Socket socket = new Socket(address, config.getPort())) {
             socket.setReuseAddress(true);
 
-//            Device resp = new Device.Builder()
-//                    .setName(InetAddress.getLocalHost().getHostName())
-//                    .setSerialNo("ASDF") // TODO: set real serial number.
-//                    .build();
-
             //noinspection unchecked
             Message<String> resp = Message.<String>build()
-                    .setId("ASDF")
+                    .setId(serialRepository.getSerialId())
                     .setType(MessageType.NETWORK_SCAN_ACK)
                     .setPayload(InetAddress.getLocalHost().getHostName())
                     .createMessage();
