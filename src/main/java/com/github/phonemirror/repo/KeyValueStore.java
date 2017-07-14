@@ -26,7 +26,7 @@ public class KeyValueStore {
     @SuppressWarnings("WeakerAccess")
     public static final int MAX_LINE_SIZE = 512;
     private static final int MAX_SAVE_RETRIES = 5;
-
+    private static final String DELIMITER = "=";
     private static final String DEFAULT_PATH = "/.PhoneMirror/";
     private static final String DEFAULT_FILE_NAME = "kvpairs.dat";
     private static final Logger logger = Logger.getLogger(KeyValueStore.class);
@@ -69,7 +69,7 @@ public class KeyValueStore {
                 int lineNo = 0;
                 while ((line = reader.readLine()) != null) {
                     lineNo++;
-                    String[] kv = line.split(",");
+                    String[] kv = line.split(DELIMITER);
                     if (kv.length != 2) {
                         logger.error("Could not load line " + lineNo + " of file " + path.toString());
                     } else {
@@ -112,6 +112,7 @@ public class KeyValueStore {
             keyValuePairs.put(key, value);
         }
 
+        // TODO: We should try to batch these together in the event that set() was called multiple times quickly
         new Thread(() -> {
             int tryCount = 0;
             boolean success = false;
@@ -164,7 +165,7 @@ public class KeyValueStore {
     private void save() throws IOException {
         synchronized (lock) {
             StringBuffer buffer = new StringBuffer();
-            keyValuePairs.forEach((key, value) -> buffer.append(key).append(',').append(value).append(System.lineSeparator()));
+            keyValuePairs.forEach((key, value) -> buffer.append(key).append(DELIMITER).append(value).append(System.lineSeparator()));
             logger.debug(buffer.toString());
             Path temp = Files.createTempFile(UUID.randomUUID().toString(), ".tmp");
             if (temp.toFile().exists()) {
