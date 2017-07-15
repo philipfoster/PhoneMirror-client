@@ -19,16 +19,23 @@
 package com.github.phonemirror;
 
 
-import com.github.phonemirror.background.PairingBeaconListener;
+import com.github.phonemirror.net.message.Message;
+import com.github.phonemirror.net.message.MessageType;
+import com.github.phonemirror.net.transport.MulticastServer;
+import com.github.phonemirror.net.transport.TcpSender;
+import com.github.phonemirror.net.transport.TransportListener;
+import com.github.phonemirror.repo.SerialRepository;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * This class operates in the background to act as a middle man between the phone app and the desktop app.
+ * This class operates in the net to act as a middle man between the phone app and the desktop app.
  * This has several advantages to handling everything in the user-facing app, including keeping the JVM alive
  * to listen for messages from the app and handling them even after the user has closed the user facing app.
  */
@@ -36,32 +43,61 @@ public class AppDaemon implements Closeable {
 
     private static final Logger logger = Logger.getLogger(AppDaemon.class);
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private PairingBeaconListener listener;
+    private MulticastServer server;
+    private SerialRepository serial;
+    private TcpSender sender;
+    private TransportListener multicastListener;
 
     @Inject
-    public AppDaemon(PairingBeaconListener pbl) {
-        listener = pbl;
-        listener.start();
+    public AppDaemon(MulticastServer server, TcpSender sender, SerialRepository serial) {
+        this.server = server;
+        this.sender = sender;
+        this.serial = serial;
+        start();
     }
 
     @SuppressWarnings("WeakerAccess")
     public void start() {
         if (!isRunning.compareAndSet(false, true)) {
             logger.warn("AppDaemon.start() was called, but the thread was already running.");
+        } else {
+            startDevicePairingWorker();
         }
-
-        startDevicePairingWorker();
     }
 
     private void startDevicePairingWorker() {
-        System.out.println("START WORKER - PRINT");
         logger.debug("START WORKER - LOG");
+
+        multicastListener = msg -> sendAcknowledgement(msg.getRecipient());
+        server.registerListener(multicastListener, msg -> msg.getMessageType() == MessageType.NETWORK_SCAN);
+    }
+
+    private void sendAcknowledgement(InetAddress recipient) {
+        logger.debug("Sending acknowledgement to " + recipient);
+
+        String name;
+        try {
+            name = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            logger.warn("Could not resolve hostname.");
+            name = "?";
+        }
+
+        sender.sendMessage(Message.<String>build()
+                .setRecipient(recipient)
+                .setType(MessageType.NETWORK_SCAN_ACK)
+                .setPayload(name)
+                .setId(serial.getSerialId())
+                .createMessage());
     }
 
     @Override
     public void close() throws IOException {
         if (!isRunning.compareAndSet(true, false)) {
             logger.warn("AppDaemon was never started, but stop() was called.");
+        } else {
+            server.unregisterListener(multicastListener);
         }
+
     }
 }

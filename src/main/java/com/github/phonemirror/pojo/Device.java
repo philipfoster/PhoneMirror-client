@@ -32,7 +32,6 @@ public class Device {
     private String name;
     private String serialNo;
     private Type deviceType = Type.PC;
-    private Message.Type messageType = Message.Type.DEVICE;
 
     private transient InetAddress ipAddress;
     private transient boolean connected;
@@ -42,7 +41,6 @@ public class Device {
         this.name = name;
         this.serialNo = serialNo;
         this.connected = connected;
-        messageType = Message.Type.DEVICE;
     }
 
     public InetAddress getIpAddress() {
@@ -61,11 +59,6 @@ public class Device {
         return connected;
     }
 
-
-
-    public Message.Type getType() {
-        return messageType;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -95,7 +88,6 @@ public class Device {
     @Override
     public String toString() {
         return "Device{" +
-                "type=" + messageType +
                 ", name='" + name + '\'' +
                 ", serialNo='" + serialNo + '\'' +
                 ", deviceType=" + deviceType +

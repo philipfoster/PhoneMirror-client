@@ -1,4 +1,4 @@
-package com.github.phonemirror.messaging;
+package com.github.phonemirror.net.message;
 
 /**
  * A type of message

@@ -18,7 +18,8 @@
 
 package com.github.phonemirror;
 
-import com.github.phonemirror.background.PairingBeaconListener;
+import com.github.phonemirror.net.transport.MulticastServer;
+import com.github.phonemirror.net.transport.TcpSender;
 import com.github.phonemirror.pojo.PairingData;
 import com.github.phonemirror.repo.KeyValueStore;
 import com.github.phonemirror.repo.SerialRepository;
@@ -60,22 +61,25 @@ public class GuiModule {
     }
 
     @Provides
-    @Singleton
-    @Inject
-    public AppDaemon provideDaemon(PairingBeaconListener pbl) {
-        return new AppDaemon(pbl);
+    public TcpSender provideTcpSender(Gson gson, Configuration config) {
+        return new TcpSender(gson, config);
     }
 
     @Provides
     @Singleton
+    public MulticastServer provideMulticastServer(ExecutorService threadPool, Configuration configuration, Gson gson) {
+        return new MulticastServer(threadPool, configuration, gson);
+    }
+
+    @Provides
+    @Singleton
+    public AppDaemon provideDaemon(MulticastServer server, TcpSender sender, SerialRepository repo) {
+        return new AppDaemon(server, sender, repo);
+    }
+
+    @Provides
     public Gson provideGson() {
         return new Gson();
-//
-//        RuntimeTypeAdapterFactory<Message> adapterFactory =
-//                RuntimeTypeAdapterFactory.of(Message.class)
-//                .registerSubtype(Device.class);
-//
-//        return new GsonBuilder().registerTypeAdapterFactory(adapterFactory).create();
     }
 
     @Provides
@@ -85,7 +89,6 @@ public class GuiModule {
 
     @Provides
     @Singleton
-    @Inject
     public Configuration provideConfig(Properties props) {
         return new Configuration(props);
     }
@@ -96,23 +99,14 @@ public class GuiModule {
     }
 
     @Provides
-    @Inject
     public PairingData providePairingData(Configuration config, SecureRandom rng) {
         return new PairingData(config, rng);
     }
 
     @Provides
+    @Singleton
     public ExecutorService provideThreadPool() {
         return Executors.newCachedThreadPool();
-    }
-
-    @Inject
-    @Provides
-    @Singleton
-    public PairingBeaconListener providePairingBeaconListener(ExecutorService threadPool, Configuration conf, Gson gson, SerialRepository repo) {
-        PairingBeaconListener pbl = new PairingBeaconListener(threadPool, conf, gson, repo);
-        pbl.start();
-        return pbl;
     }
 
     @Provides
