@@ -1,10 +1,12 @@
-package com.github.phonemirror.messaging;
+package com.github.phonemirror.net.message;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import org.apache.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 
 /**
  * This class represents a message which will be sent to a remote device. Each message contains a
@@ -12,6 +14,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Message<T> {
 
+    private static final Logger logger = Logger.getLogger(Message.class);
     static final int CURRENT_VERSION = 1;
 
     private String id;
@@ -19,11 +22,14 @@ public class Message<T> {
     private MessageType type;
     private int version = CURRENT_VERSION;
 
-    Message(String id, T payload, MessageType type, int version) {
+    private transient InetAddress recipient;
+
+    Message(String id, T payload, MessageType type, int version, InetAddress address) {
         this.id = id;
         this.payload = payload;
         this.type = type;
         this.version = version;
+        recipient = address;
     }
 
     /**
@@ -36,26 +42,25 @@ public class Message<T> {
 
     /**
      * Decode a message.
+     * @param <R> The type of the payload.
      * @param gson An instance of gson to decode with. If {@code null}, a default instance will be created.
      * @param buf the data to decode.
-     * @param <R> The type of the payload.
-     * @return The decoded message.
+     * @return The decoded message. or {@code null} if it couldn't be decoded.
      */
-    public static <R> Message<R> decode(@Nullable Gson gson, byte[] buf) {
-        String data;
+    @Nullable
+    public static <R> Message<R> decode(@Nullable Gson gson, String buf) {
+
         try {
-            data = new String(buf, "US-ASCII").trim();
-        } catch (UnsupportedEncodingException e) {
-            // will never happen on a compliant JVM.
-            // see: https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html
-            throw new IllegalStateException("Could not decode using ASCII charset.", e);
-        }
+            if (gson == null) {
+                gson = new Gson();
+            }
 
-        if (gson == null) {
-            gson = new Gson();
+            return gson.fromJson(buf, new TypeToken<Message<R>>() {
+            }.getType());
+        } catch (JsonSyntaxException jse) {
+            logger.warn("Could not decode json message. ", jse);
+            return null;
         }
-
-        return gson.fromJson(data, new TypeToken<Message<R>>() {}.getType());
     }
 
 
@@ -87,6 +92,11 @@ public class Message<T> {
                 ", payload=" + payload +
                 ", type=" + type +
                 ", version=" + version +
+                ", recipient=" + recipient +
                 '}';
+    }
+
+    public InetAddress getRecipient() {
+        return recipient;
     }
 }
