@@ -19,6 +19,7 @@
 package com.github.phonemirror.pojo;
 
 import java.net.InetAddress;
+import java.sql.Blob;
 
 /**
  * This class contains information about a compatible device on the network
@@ -33,6 +34,7 @@ public class Device {
     private String serialNo;
     private Type deviceType = Type.PC;
 
+    private transient int id;
     private transient InetAddress ipAddress;
     private transient boolean connected;
 
@@ -59,7 +61,23 @@ public class Device {
         return connected;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    /**
+     * @return this device's primary key in the database.
+     */
+    public int getId() {
+        return id;
+    }
+
+    public byte[] getEncryptionKey() {
+        // TODO: implement this
+        return new byte[1];
+    }
+
+    @SuppressWarnings("SimplifiableIfStatement")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

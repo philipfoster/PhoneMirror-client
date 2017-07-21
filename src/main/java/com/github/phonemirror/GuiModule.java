@@ -18,11 +18,15 @@
 
 package com.github.phonemirror;
 
+import com.github.phonemirror.net.PairingWorker;
 import com.github.phonemirror.net.transport.MulticastServer;
 import com.github.phonemirror.net.transport.TcpSender;
+import com.github.phonemirror.net.transport.TcpServer;
 import com.github.phonemirror.pojo.PairingData;
 import com.github.phonemirror.repo.KeyValueStore;
 import com.github.phonemirror.repo.SerialRepository;
+import com.github.phonemirror.repo.db.DatabaseManager;
+import com.github.phonemirror.repo.db.dao.DeviceDao;
 import com.github.phonemirror.util.Configuration;
 import com.google.gson.Gson;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -32,6 +36,7 @@ import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.sql.rowset.serial.SerialArray;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -61,6 +66,17 @@ public class GuiModule {
     }
 
     @Provides
+    @Singleton
+    public DatabaseManager provideDbMgr(KeyValueStore kvStore, Configuration config) {
+        return new DatabaseManager(kvStore, config);
+    }
+
+    @Provides
+    public DeviceDao provideDeviceDao(DatabaseManager dbm) {
+        return new DeviceDao(dbm);
+    }
+
+    @Provides
     public TcpSender provideTcpSender(Gson gson, Configuration config) {
         return new TcpSender(gson, config);
     }
@@ -73,8 +89,15 @@ public class GuiModule {
 
     @Provides
     @Singleton
-    public AppDaemon provideDaemon(MulticastServer server, TcpSender sender, SerialRepository repo) {
-        return new AppDaemon(server, sender, repo);
+    public PairingWorker providePairingWorker(ExecutorService tp, TcpSender tSrv, MulticastServer ms, DeviceDao dd,
+                                              TcpServer tSnd, SerialRepository sRepo) {
+        return new PairingWorker(tp, tSnd, ms, dd, tSrv, sRepo);
+    }
+
+    @Provides
+    @Singleton
+    public AppDaemon provideDaemon(PairingWorker pairingWorker) {
+        return new AppDaemon(pairingWorker);
     }
 
     @Provides

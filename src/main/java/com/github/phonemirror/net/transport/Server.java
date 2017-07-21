@@ -6,13 +6,12 @@ import org.apache.log4j.Logger;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 
 /**
  * A Server contains logic to connect with a remote device.
- * @implNote This class holds a strong reference to listeners, so it is important to call
- * {@link #unregisterListener(TransportListener)} when done to prevent memory leaks.
  * <p/>
  * This class is thread-safe
  */
@@ -20,7 +19,7 @@ public abstract class Server implements Closeable {
 
     private final Logger logger = Logger.getLogger(Server.class);
 
-    private final Map<TransportListener, MessageFilter> listeners = new ConcurrentHashMap<>();
+    private final Map<TransportListener, MessageFilter> listeners = Collections.synchronizedMap(new WeakHashMap<>());
 
     protected abstract void startServer();
 
@@ -41,14 +40,18 @@ public abstract class Server implements Closeable {
      * Begin listening for messages recieved over the network.
      * @param listener the listener to notify
      * @param filter a filter to specify the type of message the listener is interested in
+     * @return a reference to the listener
      */
-    public void registerListener(TransportListener listener, MessageFilter filter) {
+    public TransportListener registerListener(TransportListener listener, MessageFilter filter) {
 
         if (!listeners.containsKey(listener)) {
             listeners.put(listener, filter);
         } else {
             logger.warn("This listener is already registered.");
         }
+
+        return listener;
+
     }
 
     /**

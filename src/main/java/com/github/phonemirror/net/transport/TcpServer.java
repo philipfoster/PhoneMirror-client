@@ -65,7 +65,6 @@ public class TcpServer extends Server {
                 } catch (SocketTimeoutException tex) {
                     // Timing out is expected. Timeout is set to prevent the server from running
                     // indefinitely (until a packet was received) after it was closed.
-                    logger.trace("Did not receive data.");
                 } catch (IOException ioe) {
                     logger.error(ioe);
                 }

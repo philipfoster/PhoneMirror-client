@@ -83,4 +83,8 @@ public class Configuration {
     public long getBeaconFrequency() {
         return Long.parseLong(defaultProperties.getProperty("beaconFrequency"));
     }
+
+    public String getDbName() {
+        return defaultProperties.getProperty("dbName");
+    }
 }
