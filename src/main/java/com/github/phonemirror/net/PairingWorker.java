@@ -94,6 +94,7 @@ public class PairingWorker implements Closeable, Startable {
         keyRequestListener = server.registerListener(msg -> {
             KeyRequestType type = (KeyRequestType) msg.getPayload();
             switch (type) {
+                // generate key and show it to the
                 case QR:
                     break;
                 case USB:

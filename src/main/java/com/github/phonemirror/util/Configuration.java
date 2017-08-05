@@ -80,11 +80,23 @@ public class Configuration {
         return Integer.parseInt(defaultProperties.getProperty("timeout"));
     }
 
-    public long getBeaconFrequency() {
-        return Long.parseLong(defaultProperties.getProperty("beaconFrequency"));
-    }
-
     public String getDbName() {
         return defaultProperties.getProperty("dbName");
+    }
+
+    private String getBasePath() {
+        return System.getProperty("user.home") + "/";
+    }
+
+    public String getKeyValuePath() {
+        return getBasePath() + defaultProperties.getProperty("kvPath");
+    }
+
+    public String getPrivateKeyPath() {
+        return getBasePath() + defaultProperties.getProperty("pkPath");
+    }
+
+    public String getPublicKeyPath() {
+        return getBasePath() + defaultProperties.getProperty("pubkPath");
     }
 }

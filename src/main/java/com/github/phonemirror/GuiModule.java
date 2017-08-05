@@ -23,6 +23,7 @@ import com.github.phonemirror.net.transport.MulticastServer;
 import com.github.phonemirror.net.transport.TcpSender;
 import com.github.phonemirror.net.transport.TcpServer;
 import com.github.phonemirror.pojo.PairingData;
+import com.github.phonemirror.repo.KeyStoreRepository;
 import com.github.phonemirror.repo.KeyValueStore;
 import com.github.phonemirror.repo.SerialRepository;
 import com.github.phonemirror.repo.db.DatabaseManager;
@@ -55,7 +56,6 @@ public class GuiModule {
 
 
     @Provides
-    @Singleton
     public SecureRandom provideRng() {
         try {
             return SecureRandom.getInstanceStrong();
@@ -63,6 +63,11 @@ public class GuiModule {
             logger.error("Could not create SecureRandom instance", e);
             return null;
         }
+    }
+
+    @Provides
+    public KeyStoreRepository provideKeystoreRepo(Configuration configuration, KeyValueStore kvs) {
+        return new KeyStoreRepository(configuration, kvs);
     }
 
     @Provides
@@ -111,7 +116,6 @@ public class GuiModule {
     }
 
     @Provides
-    @Singleton
     public Configuration provideConfig(Properties props) {
         return new Configuration(props);
     }

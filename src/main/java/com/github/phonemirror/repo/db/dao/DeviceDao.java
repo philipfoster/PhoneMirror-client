@@ -19,7 +19,7 @@ public class DeviceDao {
     private static final String COL_PRIMARY_KEY = "id";
     private static final String COL_NAME = "Name";
     private static final String COL_SERIAL = "Serial";
-    private static final String COL_SYMM_KEY = "EncryptionKey";
+    private static final String COL_PUBLIC_KEY = "PublicKey";
 
     private DatabaseManager dbMgr;
 
@@ -41,7 +41,7 @@ public class DeviceDao {
                             COL_PRIMARY_KEY + " INTEGER PRIMARY KEY," +
                             COL_NAME + " TEXT UNIQUE, " +
                             COL_SERIAL + " CHAR(36), " +
-                            COL_SYMM_KEY + " BLOB);"
+                            COL_PUBLIC_KEY + " BLOB);"
             );
             stmt.execute();
         }
@@ -60,7 +60,7 @@ public class DeviceDao {
             conn = dbMgr.getConnection();
             
             String sql = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?);", TABLE_NAME, 
-                    COL_NAME, COL_SERIAL, COL_SYMM_KEY);
+                    COL_NAME, COL_SERIAL, COL_PUBLIC_KEY);
             
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, device.getName());

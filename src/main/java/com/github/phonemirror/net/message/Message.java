@@ -11,6 +11,7 @@ import java.net.InetAddress;
 /**
  * This class represents a message which will be sent to a remote device. Each message contains a
  * unique identifier for the device, a {@link MessageType}, protocol version, and payload.
+ * TODO: support encryption
  */
 public class Message<T> {
 
@@ -49,6 +50,12 @@ public class Message<T> {
      */
     @Nullable
     public static <R> Message<R> decode(@Nullable Gson gson, String buf) {
+
+        // TODO: handle decrypting messages that require it.
+
+        // Only the payload field needs to be encrypted, the rest should be sent in plaintext
+        // this will possibly require a wrapper class for the payload field with some extra metadata,
+        // and writing a custom gson TypeAdapterFactory for it.  https://stackoverflow.com/a/26596808
 
         try {
             if (gson == null) {

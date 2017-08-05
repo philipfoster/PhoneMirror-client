@@ -20,6 +20,7 @@ package com.github.phonemirror;
 
 
 import com.github.phonemirror.net.PairingWorker;
+import com.github.phonemirror.repo.KeyStoreRepository;
 import org.apache.log4j.Logger;
 
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ public class AppDaemon implements Closeable {
         } else {
             pairingWorker.start();
         }
+
     }
 
 

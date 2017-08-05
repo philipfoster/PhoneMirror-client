@@ -41,6 +41,9 @@ compileJava {
     options.compilerArgs+= [
             "-s", project.projectDir.absolutePath + '/src/main/generated'
     ]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+    options.compilerArgs << "-XDignore.symbol.file"
 }
 
 idea {
